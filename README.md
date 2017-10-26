@@ -5,7 +5,7 @@ Small wrapper for web workers that allows for running functions created in the b
 ## Use
 Simple example showing how to use a Thread to interleave two arrays together. Logs show that the thread takes only a couple blocking milliseconds to initialize, while the main thread takes seconds.
 
-The thread overall takes longer to produce the results but does not block the main thread. Data transfer size heavily impacts the thread run time.
+The thread overall takes longer to produce the results but does not block the main thread. Data transfer to and from the thread heavily impacts the run time.
 
 ```js
 const interleave = (a, b) => {
