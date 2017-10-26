@@ -1,4 +1,4 @@
-# javascript-thread-runner
+# javascript-thread
 
 Small wrapper for web workers that allows for running functions created in the browser without having a client to serve the worker script.
 
