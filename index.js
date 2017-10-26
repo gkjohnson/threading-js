@@ -1,11 +1,15 @@
+// Thread class for running a function in a webworker without
+// serving a script from a server
 class Thread {
     get running() { return !!this._process }
 
     get ready() { return this._ready }
 
+    /* Lifecycle */
     constructor(func, ...args) {
         if (!(func instanceof Function)) throw new Error(func, ' is not a function')
 
+        // load the scripts from the network
         const scripts = new Array(args.length)
         const promises = []
         args.forEach((s, i) => {
@@ -21,6 +25,11 @@ class Thread {
     }
 
     /* Public API */
+    // Runs the function on a webworker with the given args
+    // 'intermediateFunc' is a function that will get run
+    // when results re posted back to the main thread while
+    // the function is running
+    // Returns a promise
     run(args, intermediateFunc) {
         if (!this.ready) return
         this.cancel()
@@ -29,8 +38,9 @@ class Thread {
         return new Promise((resolve, reject) => { this._process = { resolve, reject, intermediateFunc } })
     }
 
+    // Cancels the currently running process
     cancel() {
-        if (this.running && this._process) {
+        if (this.ready && this.running && this._process) {
             this._process.reject({
                 type: 'cancel',
                 msg: null
@@ -43,12 +53,16 @@ class Thread {
         }
     }
 
+    // disposes the current thread so it can
+    // no longer be used
     dispose() {
         this._worker.terminate()
         this._ready = false
     }
 
     /* Private Functions */
+    // initialize the worker and cache the script
+    // to use in the worker
     _initWorker(func, scripts) {
         this._cachedScript = `
         ${scripts.join('\n')}
@@ -71,9 +85,13 @@ class Thread {
         this._constructWorker()
     }
 
+    // consruct the worker
     _constructWorker() {
+        // create the blob
         const blob = new Blob([this._cachedScript], { type: 'plain/text' })
         const url = URL.createObjectURL(blob)
+        
+        // create the worker
         this._worker = new Worker(url)
         this._worker.onmessage = msg => {
             if (msg.data.type === 'complete') {
@@ -87,6 +105,9 @@ class Thread {
             this._process.reject({ type: 'error', msg: e.message })
             this._process = null
         }
+
+        // dispose of the blob on the next frame because
+        // we need to make sure the worker has loaded it
         requestAnimationFrame(() => URL.revokeObjectURL(url))
 
         this._ready = true
