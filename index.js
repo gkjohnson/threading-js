@@ -24,7 +24,7 @@ class Thread {
             .then(() => this._initWorker(func, scripts))
     }
 
-    /* Public APU */
+    /* Public API */
     run(args) {
         if (!this.ready) return
         this.cancel()
@@ -53,7 +53,18 @@ class Thread {
         ${scripts.join('\n')}
         const threadFunction = ${func}
 
-        onmessage = e => postMessage(threadFunction(e.data))
+        const __postMessage = postMessage
+        postMessage = msg => {
+            __postMessage({
+                type: 'intermediate',
+                data: msg
+            })
+        }
+
+        onmessage = e => __postMessage({
+            type: 'complete',
+            data: threadFunction(e.data)
+        })
         `
 
         this._constructWorker()
@@ -64,7 +75,7 @@ class Thread {
         const url = URL.createObjectURL(blob)
         this._worker = new Worker(url)
         this._worker.onmessage = msg => {
-            this._promise.resolve(msg.data)
+            this._promise.resolve(msg.data.data)
             this._promise = null
         }
         this._worker.onerror = e => {
