@@ -1,14 +1,10 @@
 class Thread {
-    get status() { return this._status }
+    get running() { return !!this._process }
 
-    get running() { return this.status === 'running' }
-
-    get ready() { return this.status === 'ready' || this.running }
+    get ready() { return this._ready }
 
     constructor(func, ...args) {
-        this._status = 'invalid'
         if (!(func instanceof Function)) throw new Error(func, ' is not a function')
-        this._status = 'constructing'
 
         const scripts = new Array(args.length)
         const promises = []
@@ -25,26 +21,31 @@ class Thread {
     }
 
     /* Public API */
-    run(args) {
+    run(args, intermediateFunc) {
         if (!this.ready) return
         this.cancel()
         this._worker.postMessage(args)
 
-        return new Promise((resolve, reject) => { this._promise = { resolve, reject } })
+        return new Promise((resolve, reject) => { this._process = { resolve, reject, intermediateFunc } })
     }
 
     cancel() {
-        if (this.running && this._promise) {
-            this._promise.reject({
+        if (this.running && this._process) {
+            this._process.reject({
                 type: 'cancel',
                 msg: null
             })
 
-            this._promise = null
+            this._process = null
 
             this._worker.terminate()
             this._constructWorker()
         }
+    }
+
+    dispose() {
+        this._worker.terminate()
+        this._ready = false
     }
 
     /* Private Functions */
@@ -75,15 +76,19 @@ class Thread {
         const url = URL.createObjectURL(blob)
         this._worker = new Worker(url)
         this._worker.onmessage = msg => {
-            this._promise.resolve(msg.data.data)
-            this._promise = null
+            if (msg.data.type === 'complete') {
+                this._process.resolve(msg.data.data)
+                this._process = null
+            } else if(this._process.intermediateFunc) {
+                this._process.intermediateFunc(msg.data)
+            }
         }
         this._worker.onerror = e => {
-            this._promise.reject({ type: 'error', msg: e.message })
-            this._promise = null
+            this._process.reject({ type: 'error', msg: e.message })
+            this._process = null
         }
         requestAnimationFrame(() => URL.revokeObjectURL(url))
 
-        this._status = 'ready'
+        this._ready = true
     }
 }
