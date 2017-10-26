@@ -61,6 +61,12 @@ console.timeEnd('thread run')
 ### Thread(func, context, srcs)
 The constructor takes a function to run, a dictionary of context data and functions for use in the thread function, and an array of remote source URLs to load libraries in from.
 
+### running
+Whether or not the thread is running
+
+### ready
+Whether or not the thread is ready
+
 ### run(args, intermediateFunc)
 Runs the thread function with the args value as an argument to the function.
 
