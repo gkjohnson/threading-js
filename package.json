@@ -1,0 +1,23 @@
+{
+  "name": "javascript-thread-runner",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "static-server": "^2.0.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "serve": "static-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gkjohnson/javascript-thread-runner.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gkjohnson/javascript-thread-runner/issues"
+  },
+  "homepage": "https://github.com/gkjohnson/javascript-thread-runner#readme"
+}
