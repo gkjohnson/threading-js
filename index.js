@@ -6,13 +6,13 @@ class Thread {
     get ready() { return this._ready }
 
     /* Lifecycle */
-    constructor(func, ...args) {
+    constructor(func, srcs) {
         if (!(func instanceof Function)) throw new Error(func, ' is not a function')
 
         // load the scripts from the network
-        const scripts = new Array(args.length)
+        const scripts = new Array(srcs.length)
         const promises = []
-        args.forEach((s, i) => {
+        srcs.forEach((s, i) => {
             const prom = fetch(s)
                 .then(res => res.text())
                 .then(text => scripts[i] = text)
