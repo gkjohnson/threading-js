@@ -40,12 +40,12 @@ class Thread {
         const url = URL.createObjectURL(blob)
         this._worker = new Worker(url)
         this._worker.onmessage = msg => {
-            console.log("HERE", this._promise)
-            this._promise.resolve(msg)
+            this._promise.resolve(msg.data)
             this._promise = null
         }
         this._worker.onerror = e => {
-            this._promise.reject({ type: 'error', msg: e })
+            this._promise.reject({ type: 'error', msg: e.message })
+            this._promise = null
         }
         requestAnimationFrame(() => URL.revokeObjectURL(url))
 
