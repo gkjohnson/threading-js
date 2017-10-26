@@ -21,37 +21,10 @@ class Thread {
 
         Promise
             .all(promises)
-            .then(() => this.initWorker(func, scripts))
+            .then(() => this._initWorker(func, scripts))
     }
 
-    initWorker(func, scripts) {
-        this._cachedScript = `
-        ${scripts.join('\n')}
-        const threadFunction = ${func}
-
-        onmessage = e => postMessage(threadFunction(e.data))
-        `
-
-        this.constructWorker()
-    }
-
-    constructWorker() {
-        const blob = new Blob([this._cachedScript], { type: 'plain/text' })
-        const url = URL.createObjectURL(blob)
-        this._worker = new Worker(url)
-        this._worker.onmessage = msg => {
-            this._promise.resolve(msg.data)
-            this._promise = null
-        }
-        this._worker.onerror = e => {
-            this._promise.reject({ type: 'error', msg: e.message })
-            this._promise = null
-        }
-        requestAnimationFrame(() => URL.revokeObjectURL(url))
-
-        this._status = 'ready'
-    }
-
+    /* Public APU */
     run(args) {
         if (!this.ready) return
         this.cancel()
@@ -70,7 +43,36 @@ class Thread {
             this._promise = null
 
             this._worker.terminate()
-            this.constructWorker()
+            this._constructWorker()
         }
+    }
+
+    /* Private Functions */
+    _initWorker(func, scripts) {
+        this._cachedScript = `
+        ${scripts.join('\n')}
+        const threadFunction = ${func}
+
+        onmessage = e => postMessage(threadFunction(e.data))
+        `
+
+        this._constructWorker()
+    }
+
+    _constructWorker() {
+        const blob = new Blob([this._cachedScript], { type: 'plain/text' })
+        const url = URL.createObjectURL(blob)
+        this._worker = new Worker(url)
+        this._worker.onmessage = msg => {
+            this._promise.resolve(msg.data)
+            this._promise = null
+        }
+        this._worker.onerror = e => {
+            this._promise.reject({ type: 'error', msg: e.message })
+            this._promise = null
+        }
+        requestAnimationFrame(() => URL.revokeObjectURL(url))
+
+        this._status = 'ready'
     }
 }
