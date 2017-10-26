@@ -37,17 +37,20 @@ for(let i = 0; i < 100000; i++) {
   arr2.push(Math.random())
 }
 
-console.time('thread run')
-console.time('thread results')
-thread.run({ arr1, arr2 }, log => console.log(log)).then(res => {
-  console.timeEnd('thread results')
-  console.log(res)
+// Make sure the worker has loaded
+requestAnimationFrame(() => {
+  console.time('thread run')
+  console.time('thread results')
+  thread.run({ arr1, arr2 }, log => console.log(log)).then(res => {
+    console.timeEnd('thread results')
+    console.log(res)
 
-  console.time('main thread')
-  interleave(arr1, arr2)
-  console.timeEnd('main thread')
+    console.time('main thread')
+    interleave(arr1, arr2)
+    console.timeEnd('main thread')
+  })
+  console.timeEnd('thread run')
 })
-console.timeEnd('thread run')
 
 // thread run: 5.38720703125ms
 // starting
