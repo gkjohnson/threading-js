@@ -6,7 +6,7 @@ class Thread {
     get ready() { return this._ready }
 
     /* Lifecycle */
-    constructor(func, srcs) {
+    constructor(func, context = {}, srcs = []) {
         if (!(func instanceof Function)) throw new Error(func, ' is not a function')
 
         // load the scripts from the network
@@ -21,7 +21,7 @@ class Thread {
 
         Promise
             .all(promises)
-            .then(() => this._initWorker(func, scripts))
+            .then(() => this._initWorker(func, context, scripts))
     }
 
     /* Public API */
@@ -63,11 +63,23 @@ class Thread {
     /* Private Functions */
     // initialize the worker and cache the script
     // to use in the worker
-    _initWorker(func, scripts) {
+    _initWorker(func, context, scripts) {
         this._cachedScript = `
+        // scripts
         ${scripts.join('\n')}
+
+        // process function
         const threadFunction = ${func}
 
+        // context definition
+        ${
+            Object
+                .keys(context)
+                .map(key => `const ${key} = ${context[key] ? context[key].toString() : null}`)
+                .join('\n')
+        }
+
+        // callbacks
         const __postMessage = postMessage
         postMessage = msg => {
             __postMessage({
