@@ -80,7 +80,7 @@ class Thread {
                 this._process.resolve(msg.data.data)
                 this._process = null
             } else if(this._process.intermediateFunc) {
-                this._process.intermediateFunc(msg.data)
+                this._process.intermediateFunc(msg.data.data)
             }
         }
         this._worker.onerror = e => {
