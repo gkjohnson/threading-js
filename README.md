@@ -8,6 +8,7 @@ Simple example showing how to use a Thread to interleave two arrays together. Lo
 The thread overall takes longer to produce the results but does not block the main thread. Data transfer to and from the thread heavily impacts the run time.
 
 ```js
+// Operation functions
 const interleave = (a, b) => {
   const res = []
   while(a.length || b.length) {
@@ -28,8 +29,10 @@ const threadFunc = args => {
   return res
 }
 
+// Create thread
 const thread = new Thread(threadFunc, { interleave })
 
+// Create data
 const arr1 = []
 const arr2 = []
 for(let i = 0; i < 100000; i++) {
@@ -37,7 +40,7 @@ for(let i = 0; i < 100000; i++) {
   arr2.push(Math.random())
 }
 
-// Make sure the worker has loaded
+// Make sure the worker has loaded and run test
 requestAnimationFrame(() => {
   console.time('thread run')
   console.time('thread results')
