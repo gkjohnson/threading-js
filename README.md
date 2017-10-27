@@ -87,5 +87,7 @@ Cancels the current run and prepares for a new one
 Disposes of the Thread data so it can't be used anymore
 
 ## TODO
-- [ ] Investigate shared array buffers
+- [ ] Support transferrable objects more simply (Arraybuffers, SharedArrayBuffers, Atomics)
+- [ ] Update example to use them
+- [ ] Create a ThreadPool and ProcessQueue task for easy management of parallel operations
 - [ ] Cache loaded scripts
