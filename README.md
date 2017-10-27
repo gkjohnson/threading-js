@@ -85,3 +85,7 @@ Cancels the current run and prepares for a new one
 
 ### dipose()
 Disposes of the Thread data so it can't be used anymore
+
+## TODO
+- [ ] Investigate shared array buffers
+- [ ] Cache loaded scripts
