@@ -1,5 +1,6 @@
 class ThreadPool {
 
+    get ready() { return this._activeThreads < this._capacity }
     get activeThreads() { return this._activeThreads }
     get capacity() { return this._capacity }
     
@@ -16,11 +17,21 @@ class ThreadPool {
 
         if (this._activeThreads > this._threads.length) this._threads.push(new Thread(...this._threadArgs))
 
-        // TODO
-        // find a non runn thread
-        // return null if you cant
-        // subscribe to the promise to decrement the active thread count again
-        // return new promise
+        const currThread = this._threads.filter(t => t.ready && !t.running)[0]
+        if (!currThread) return null
+        
+        return new Promise((res, rej) => {
+            currThread
+            .run(...arguments)
+            .then(d => {
+                this._activeThreads--
+                res(d)
+            })
+            .catch(e => {
+                this._activeThreads--
+                rej(e)
+            })
+        })
     }
 
     dispose() {
@@ -32,5 +43,38 @@ class ThreadPool {
 }
 
 class ThreadQueue : ThreadPool {
-    
+    get ready() { return true }
+
+    run() {
+        this._queue = this._queue || []
+        const job = {
+            args: [...arguments],
+            promise: null
+        }
+        const pr = new Promise((resolve, reject) => job.promise = { resolve, reject })
+
+        this._queue.push(job)
+        this.tryRunQueue()
+    }
+
+    tryRunQueue() {
+        while (this.ready && this._queue.length) {
+            const job = this._queue.shift()
+            super
+                .run(...job.args)
+                .then(d => {
+                    job.promise.resolve(d)
+                    this.tryRunQueue()
+                })
+                .catch(e => {
+                    job.promise.reject(e)
+                    this.tryRunQueue()
+                })
+        }
+    }
+
+    dispose() {
+        super.dispose()
+        this._queue = []
+    }
 }

@@ -107,8 +107,11 @@ class Thread {
         this._worker = new Worker(url)
         this._worker.onmessage = msg => {
             if (msg.data.type === 'complete') {
-                this._process.resolve(msg.data.data)
+                // set the process to null before resolving
+                // in case you want to run in the resolve function
+                const pr = this._process
                 this._process = null
+                pr.resolve(msg.data.data)
             } else if(this._process.intermediateFunc) {
                 this._process.intermediateFunc(msg.data.data)
             }
