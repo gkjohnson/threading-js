@@ -30,10 +30,10 @@ class Thread {
     // when results re posted back to the main thread while
     // the function is running
     // Returns a promise
-    run(args, intermediateFunc) {
+    run(args, intermediateFunc, transferList) {
         if (!this.ready) return
         this.cancel()
-        this._worker.postMessage(args)
+        this._worker.postMessage(args, transferList)
 
         return new Promise((resolve, reject) => { this._process = { resolve, reject, intermediateFunc } })
     }
