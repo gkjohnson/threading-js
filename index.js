@@ -134,6 +134,6 @@ class Thread {
         requestAnimationFrame(() => URL.revokeObjectURL(url))
 
         this._ready = true
-        this._lateRun()
+        if (this._lateRun) this._lateRun()
     }
 }
