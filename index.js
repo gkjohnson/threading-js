@@ -31,9 +31,16 @@ class Thread {
     // the function is running
     // Returns a promise
     run(args, intermediateFunc, transferList) {
-        if (!this.ready) return
-        this.cancel()
-        this._worker.postMessage(args, transferList)
+        if (!this.ready) {
+            // queue up the first run if we're not quite ready yet
+            this._lateRun = () => {
+                this._worker.postMessage(args, transferList)
+                delete this._lateRun
+            }
+        } else {
+            this.cancel()
+            this._worker.postMessage(args, transferList)
+        }
 
         return new Promise((resolve, reject) => { this._process = { resolve, reject, intermediateFunc } })
     }
@@ -51,6 +58,7 @@ class Thread {
             this._worker.terminate()
             this._constructWorker()
         }
+        delete this._lateRun
     }
 
     // disposes the current thread so it can
@@ -126,5 +134,6 @@ class Thread {
         requestAnimationFrame(() => URL.revokeObjectURL(url))
 
         this._ready = true
+        this._lateRun()
     }
 }
