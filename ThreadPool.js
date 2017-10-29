@@ -4,7 +4,7 @@ class ThreadPool {
     get activeThreads() { return this._activeThreads }
     get capacity() { return this._capacity }
     
-    constructor(capacity, func, context = {}, srcs = {}) {
+    constructor(capacity, func, context = {}, srcs = []) {
         this._capacity = capacity
         this._activeThreads = 0
         this._threads = []
@@ -42,7 +42,6 @@ class ThreadPool {
     }
 }
 
-class ThreadQueue : ThreadPool {
 class ThreadQueue extends ThreadPool {
     get ready() { return true }
 
