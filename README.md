@@ -72,27 +72,35 @@ thread
 ```
 ## API
 
-### Thread(func, context, srcs)
+### Thread
+
+#### constructor(func, context, srcs)
 The constructor takes a function to run, a dictionary of context data and functions for use in the thread function, and an array of remote source URLs to load libraries in from.
 
-### running
+#### running
 Whether or not the thread is running
 
-### ready
+#### ready
 Whether or not the thread is ready
 
-### run(args, intermediateFunc)
+#### run(args, intermediateFunc)
 Runs the thread function with the args value as an argument to the function.
 
 `intermediateFunc` is a callback to recieve intermediate postMessage results from the function
 
 Returns a promise
 
-### cancel()
+#### cancel()
 Cancels the current run and prepares for a new one
 
-### dipose()
+#### dipose()
 Disposes of the Thread data so it can't be used anymore
+
+### ThreadPool
+TODO ...
+
+### ThreadQueue
+TODO ...
 
 ## TODO
 - [ ] Prevent parallel script download
