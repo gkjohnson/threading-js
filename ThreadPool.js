@@ -43,6 +43,7 @@ class ThreadPool {
 }
 
 class ThreadQueue : ThreadPool {
+class ThreadQueue extends ThreadPool {
     get ready() { return true }
 
     run() {
