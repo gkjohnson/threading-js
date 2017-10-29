@@ -3,17 +3,18 @@
 Small wrapper for web workers that allows for running functions created in the browser without having a client to serve the worker script.
 
 ## Use
-Simple example showing how to use a Thread to interleave two arrays together. Logs show that the thread takes only a couple blocking milliseconds to initialize, while the main thread takes seconds.
-
-The thread overall takes longer to produce the results but does not block the main thread. Data transfer to and from the thread heavily impacts the run time.
+Simple example showing how to use a Thread to interleave two arrays together using a SharedArrayBuffer. Using basic arrays increases the run time due to copying the data.
 
 ```js
 // Operation functions
-const interleave = (a, b) => {
-  const res = []
-  while(a.length || b.length) {
-    a.length && res.push(a.shift())
-    b.length && res.push(b.shift())
+const interleave = (a, b, res) => {
+  let i = 0
+  while(true) {
+    if (i >= a.length || i >= b.length) break
+
+    res[2 * i + 0] = a[i]
+    res[2 * i + 1] = b[i]
+    i++
   }
   return res
 }
@@ -21,46 +22,53 @@ const interleave = (a, b) => {
 const threadFunc = args => {
   const arr1 = args.arr1
   const arr2 = args.arr2
-  
+  const res = args.res
+
   postMessage('starting')
-  const res = interleave(arr1, arr2)
+  const data = interleave(arr1, arr2, res)
   postMessage('done')
   
-  return res
+  return data
 }
 
 // Create thread
 const thread = new Thread(threadFunc, { interleave })
 
 // Create data
-const arr1 = []
-const arr2 = []
-for(let i = 0; i < 100000; i++) {
-  arr1.push(Math.random())
-  arr2.push(Math.random())
+const ARRAY_LENGTH = 10000000
+const arr1 = new Float32Array(new SharedArrayBuffer(ARRAY_LENGTH * 4))
+const arr2 = new Float32Array(new SharedArrayBuffer(ARRAY_LENGTH * 4))
+const sharedres = new Float32Array(new SharedArrayBuffer(ARRAY_LENGTH * 4 * 2))
+for(let i = 0; i < ARRAY_LENGTH; i++) {
+  arr1[i] = Math.random()
+  arr2[i] = Math.random()
 }
 
-// Make sure the worker has loaded and run test
-requestAnimationFrame(() => {
-  console.time('thread run')
-  console.time('thread results')
-  thread.run({ arr1, arr2 }, log => console.log(log)).then(res => {
-    console.timeEnd('thread results')
-    console.log(res)
+// Run the tests
+console.time('main thread run')
+interleave(arr1, arr2, sharedres)
+console.timeEnd('main thread run')
 
-    console.time('main thread')
-    interleave(arr1, arr2)
-    console.timeEnd('main thread')
-  })
-  console.timeEnd('thread run')
-})
+console.time('initial thread run')
+thread
+    .run({ arr1, arr2, res: sharedres }, log => console.log(log))
+    .then(res => {
+        console.timeEnd('initial thread run')
 
-// thread run: 5.38720703125ms
+        console.time('subsequent thread run')
+        return thread.run({ arr1, arr2, res: sharedres }, log => console.log(log))
+    })
+    .then(res => {
+        console.timeEnd('subsequent thread run')
+    })
+
+// main thread run: 30.962158203125ms
 // starting
 // done
-// thread results: 14559.43798828125ms
-// [...]
-// main thread: 4188.56884765625ms
+// initial thread run: 111.95703125ms
+// starting
+// done
+// subsequent thread run: 35.179931640625ms
 ```
 ## API
 
@@ -87,6 +95,4 @@ Cancels the current run and prepares for a new one
 Disposes of the Thread data so it can't be used anymore
 
 ## TODO
-- [ ] Update example to use Arraybuffers, SharedArrayBuffers, Atomics
-- [ ] Create a ThreadPool and ProcessQueue task for easy management of parallel operations
 - [ ] Cache loaded scripts
