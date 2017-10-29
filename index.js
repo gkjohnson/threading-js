@@ -9,14 +9,27 @@ class Thread {
     constructor(func, context = {}, srcs = []) {
         if (!(func instanceof Function)) throw new Error(func, ' is not a function')
 
-        // load the scripts from the network
+        // Initialize the script cache if it hasn't been already
+        // TODO: Use promises here so multiple threads started back
+        // to back won't download the same script twice
+        Thread._cachedScripts = Thread._cachedScripts || {}
+
+        // load the scripts from the network if they're
+        // not cached already
         const scripts = new Array(srcs.length)
         const promises = []
         srcs.forEach((s, i) => {
-            const prom = fetch(s)
-                .then(res => res.text())
-                .then(text => scripts[i] = text)
-            promises.push(prom)
+            if (s in Thread._cachedScripts) {
+                scripts[i] = Thrad._cachedScripts[s]
+            } else {
+                const prom = fetch(s)
+                    .then(res => res.text())
+                    .then(text => {
+                        Thread._cachedScripts[s] = text
+                        scripts[i] = text
+                    })
+                promises.push(prom)
+            }
         })
 
         Promise
