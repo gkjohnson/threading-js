@@ -24,11 +24,7 @@ class ThreadPool {
 
         // Find a thread to run. If we can't find a thread that is
         // ready and able to run, we return null
-
-        // TODO: Make sure the thread will queue up a run even if it's not
-        // ready yet so we don't have this weird async issue
         const currThread = this._threads.filter(t => !t.running)[0]
-        console.log(this._threads.filter(t => !t.running))
         if (!currThread) return null
         
         return new Promise((res, rej) => {
@@ -70,7 +66,9 @@ class ThreadQueue extends ThreadPool {
 
     // Try to run the jobs on the queue
     tryRunQueue() {
-        while (this.ready && this._queue.length) {
+        // run jobs on the queue on the threadpool is
+        // saturated
+        while (super.ready && this._queue.length) {
             const job = this._queue.shift()
             super
                 .run(...job.args)
