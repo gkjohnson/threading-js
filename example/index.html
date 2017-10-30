@@ -2,9 +2,9 @@
 <html>
 <head>
     <title></title>
-    <script type="text/javascript" src="./Thread.js"></script>
-    <script type="text/javascript" src="./ThreadPool.js"></script>
-    <script type="text/javascript" src="./ThreadQueue.js"></script>
+    <script type="text/javascript" src="../Thread.js"></script>
+    <script type="text/javascript" src="../ThreadPool.js"></script>
+    <script type="text/javascript" src="../ThreadQueue.js"></script>
 
     <script type="text/javascript">
         // Operation functions
@@ -36,7 +36,7 @@
         const thread = new Thread(threadFunc, { interleave })
 
         // Create data
-        const ARRAY_LENGTH = 100000000
+        const ARRAY_LENGTH = 1
         const arr1 = new Float32Array(new SharedArrayBuffer(ARRAY_LENGTH * 4))
         const arr2 = new Float32Array(new SharedArrayBuffer(ARRAY_LENGTH * 4))
         const sharedres = new Float32Array(new SharedArrayBuffer(ARRAY_LENGTH * 4 * 2))
