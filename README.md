@@ -70,9 +70,9 @@ thread
 // done
 // subsequent thread run: 35.179931640625ms
 ```
-## API
+# API
 
-### Thread
+## Thread
 
 #### constructor(func, context, srcs)
 The constructor takes a function to run, a dictionary of context data and functions for use in the thread function, and an array of remote source URLs to load libraries in from.
@@ -98,7 +98,7 @@ Cancels the current run and prepares for a new one.
 #### dipose()
 Disposes of the Thread data so it can't be used anymore.
 
-### ThreadPool
+## ThreadPool
 A thrad pool for easily running many of the same type of task in parallel.
 
 #### constructor(capacity, func, context, srcs)
@@ -119,7 +119,7 @@ Get and use an available thread to run the requested task. Behaves like `Thread.
 #### dispose()
 Dispose of all threads and data.
 
-### ThreadQueue
+## ThreadQueue
 A helper class for creating a job queue and running through the tasks using as many threads to work as the capacity allows.
 
 #### constructor(...)
