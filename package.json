@@ -2,7 +2,7 @@
   "name": "javascript-thread",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "Thread.js",
   "dependencies": {},
   "devDependencies": {
     "static-server": "^2.0.6"
