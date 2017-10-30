@@ -1,6 +1,13 @@
 # javascript-thread
 
-Small wrapper for web workers that allows for running functions created in the browser without having a client to serve the worker script.
+Small wrapper for web workers that allows for running functions created in the browser without having to serve a worker script the client.
+
+## Installation
+The repo is provided on npm [here](https://www.npmjs.com/package/threading-js).
+
+```
+npm install threading-js
+```
 
 ## Use
 Simple example showing how to use a Thread to interleave two arrays together using a SharedArrayBuffer. Using basic arrays increases the run time due to copying the data.
