@@ -8,25 +8,17 @@ class Thread {
     constructor(func, context = {}, srcs = []) {
         if (!(func instanceof Function)) throw new Error(func, ' is not a function')
 
-        // Initialize the script cache if it hasn't been already
-        // TODO: Use promises here so multiple threads started back
-        // to back won't download the same script twice
-        Thread._cachedScripts = Thread._cachedScripts || {}
-
         // load the scripts from the network if they're
         // not cached already
         const scripts = new Array(srcs.length)
         const promises = []
         srcs.forEach((s, i) => {
-            if (s in Thread._cachedScripts) {
-                scripts[i] = Thrad._cachedScripts[s]
+            const script = Thread._getScript(s)
+            if (script) {
+                scripts[i] = script
             } else {
-                const prom = fetch(s)
-                    .then(res => res.text())
-                    .then(text => {
-                        Thread._cachedScripts[s] = text
-                        scripts[i] = text
-                    })
+                const prom = Thread._getScriptPromise(s)
+                prom.then(text => scripts[i] = text)
                 promises.push(prom)
             }
         })
@@ -148,4 +140,26 @@ class Thread {
         this._ready = true
         if (this._lateRun) this._lateRun()
     }
+}
+
+// Thrad script cache
+Thread._cachedScripts = {}
+Thread._scriptPromises = {}
+
+Thread._getScript = src => src in Thread._cachedScripts ? Thread._cachedScripts[s] : null
+Thread._getScriptPromise = src => {
+    if (src in Thread._scriptPromises) return Thread._scriptPromises[src]
+
+    return Thread._scriptPromises[src] = new Promise((res, rej) => {
+        fetch(src)
+            .then(data => data.text())
+            .then(text => {
+                Thread._cachedScripts[src] = text
+                res(text)
+            })
+            .catch(e => {
+                console.error(`Could not load script from '${src}'`)
+                console.error(e)
+            })
+    })
 }

@@ -130,6 +130,3 @@ Same as `Thread.run`.
 
 #### dispose()
 Same as `ThreadPool.dispose`
-
-## TODO
-- [ ] Prevent parallel script download
