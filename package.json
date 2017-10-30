@@ -1,5 +1,5 @@
 {
-  "name": "javascript-thread",
+  "name": "threading-js",
   "version": "0.0.1",
   "description": "",
   "main": "Thread.js",
@@ -14,6 +14,15 @@
     "type": "git",
     "url": "git+https://github.com/gkjohnson/javascript-thread-runner.git"
   },
+  "keywords": [
+    "javascript",
+    "performance",
+    "threads",
+    "webworker",
+    "webworkers",
+    "process",
+    "subprocess"
+  ],
   "author": "Garrett Johnson <garrett.kjohnson@gmail.com>",
   "license": "ISC",
   "bugs": {
