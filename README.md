@@ -5,6 +5,8 @@ Small wrapper for web workers that allows for running functions created in the b
 ## Use
 Simple example showing how to use a Thread to interleave two arrays together using a SharedArrayBuffer. Using basic arrays increases the run time due to copying the data.
 
+The function being passed to the thread must be completely self-contained and only reference data in the passed 'context' object or loaded scripts.
+
 ```js
 // Operation functions
 const interleave = (a, b, res) => {
