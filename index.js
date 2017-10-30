@@ -5,7 +5,6 @@ class Thread {
 
     get ready() { return this._ready }
 
-    /* Lifecycle */
     constructor(func, context = {}, srcs = []) {
         if (!(func instanceof Function)) throw new Error(func, ' is not a function')
 

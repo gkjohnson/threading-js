@@ -16,6 +16,7 @@ class ThreadPool {
         this._threadArgs = [func, context, srcs]
     }
 
+    /* Public API */
     run() {
         // Increment the number of running threads up to
         // capacity.
@@ -53,6 +54,7 @@ class ThreadPool {
 class ThreadQueue extends ThreadPool {
     get ready() { return true }
 
+    /* Public API */
     run() {
         this._queue = this._queue || []
 
@@ -61,11 +63,17 @@ class ThreadQueue extends ThreadPool {
         const pr = new Promise((resolve, reject) => job.promise = { resolve, reject })
 
         this._queue.push(job)
-        this.tryRunQueue()
+        this._tryRunQueue()
     }
 
+    dispose() {
+        super.dispose()
+        this._queue = []
+    }
+
+    /* Private Functions */
     // Try to run the jobs on the queue
-    tryRunQueue() {
+    _tryRunQueue() {
         // run jobs on the queue on the threadpool is
         // saturated
         while (super.ready && this._queue.length) {
@@ -74,17 +82,12 @@ class ThreadQueue extends ThreadPool {
                 .run(...job.args)
                 .then(d => {
                     job.promise.resolve(d)
-                    this.tryRunQueue()
+                    this._tryRunQueue()
                 })
                 .catch(e => {
                     job.promise.reject(e)
-                    this.tryRunQueue()
+                    this._tryRunQueue()
                 })
         }
-    }
-
-    dispose() {
-        super.dispose()
-        this._queue = []
     }
 }
