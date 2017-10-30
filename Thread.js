@@ -87,7 +87,13 @@ class Thread {
         ${
             Object
                 .keys(context)
-                .map(key => `const ${key} = ${context[key] ? context[key].toString() : null}`)
+                .map(key => {
+                    // manually stringify functions
+                    const data = context[key]
+                    const str = data instanceof Function ? data.toString() : JSON.stringify(data)
+
+                    return `const ${key} = ${str}`
+                })
                 .join('\n')
         }
 
