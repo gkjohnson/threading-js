@@ -83,24 +83,53 @@ Whether or not the thread is running
 #### ready
 Whether or not the thread is ready
 
-#### run(args, intermediateFunc)
+#### run(args, intermediateFunc, transferList)
 Runs the thread function with the args value as an argument to the function.
 
-`intermediateFunc` is a callback to recieve intermediate postMessage results from the function
+`intermediateFunc` is a callback to recieve intermediate postMessage results from the function.
 
-Returns a promise
+`transferList` maps to the web-worker transfer list.
+
+Returns a promise.
 
 #### cancel()
-Cancels the current run and prepares for a new one
+Cancels the current run and prepares for a new one.
 
 #### dipose()
-Disposes of the Thread data so it can't be used anymore
+Disposes of the Thread data so it can't be used anymore.
 
 ### ThreadPool
-TODO ...
+A thrad pool for easily running many of the same type of task in parallel.
+
+#### constructor(capacity, func, context, srcs)
+Like the thread constructor, but takes a capacity as the first argument.
+
+#### ready
+Whether the pool has inactive threads.
+
+#### activeThreads
+The number of currently inactive threads.
+
+#### capacity
+The total possible number of threads the pool can support.
+
+#### run(...)
+Get and use an available thread to run the requested task. Behaves like `Thread.run`, but returns `null` if there are not threads available in the pool.
+
+#### dispose()
+Dispose of all threads and data.
 
 ### ThreadQueue
-TODO ...
+A helper class for creating a job queue and running through the tasks using as many threads to work as the capacity allows.
+
+#### constructor(...)
+Same as the `ThreadPool` constructor.
+
+#### run(...)
+Same as `Thread.run`.
+
+#### dispose()
+Same as `ThreadPool.dispose`
 
 ## TODO
 - [ ] Prevent parallel script download
