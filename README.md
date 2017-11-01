@@ -92,12 +92,10 @@ Whether or not the thread is running
 #### ready
 Whether or not the thread is ready
 
-#### run(args, intermediateFunc, transferList)
+#### run(args, intermediateFunc)
 Runs the thread function with the args value as an argument to the function.
 
 `intermediateFunc` is a callback to recieve intermediate postMessage results from the function.
-
-`transferList` maps to the web-worker transfer list.
 
 Returns a promise.
 

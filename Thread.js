@@ -34,16 +34,16 @@ class Thread {
     // when results re posted back to the main thread while
     // the function is running
     // Returns a promise
-    run(args, intermediateFunc, transferList) {
+    run(args, intermediateFunc) {
         if (!this.ready) {
             // queue up the first run if we're not quite ready yet
             this._lateRun = () => {
-                this._worker.postMessage(args, transferList)
+                this._worker.postMessage(args)
                 delete this._lateRun
             }
         } else {
             this.cancel()
-            this._worker.postMessage(args, transferList)
+            this._worker.postMessage(args)
         }
 
         return new Promise((resolve, reject) => { this._process = { resolve, reject, intermediateFunc } })
