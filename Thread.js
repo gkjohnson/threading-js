@@ -77,12 +77,6 @@ class Thread {
     // to use in the worker
     _initWorker(func, context, scripts) {
         this._cachedScript = `
-        // scripts
-        ${scripts.join('\n')}
-
-        // process function
-        const threadFunction = ${func}
-
         // context definition
         ${
             Object
@@ -96,6 +90,12 @@ class Thread {
                 })
                 .join('\n')
         }
+
+        // scripts
+        ${scripts.join('\n')}
+
+        // process function
+        const threadFunction = ${func}
 
         // callbacks
         const __postMessage = postMessage
@@ -153,7 +153,7 @@ class Thread {
 Thread._cachedScripts = {}
 Thread._scriptPromises = {}
 
-Thread._getScript = src => src in Thread._cachedScripts ? Thread._cachedScripts[s] : null
+Thread._getScript = src => src in Thread._cachedScripts ? Thread._cachedScripts[src] : null
 Thread._getScriptPromise = src => {
     if (src in Thread._scriptPromises) return Thread._scriptPromises[src]
 

@@ -12,6 +12,7 @@ class ThreadQueue extends ThreadPool {
 
         this._queue.push(job)
         this._tryRunQueue()
+        return pr
     }
 
     dispose() {
