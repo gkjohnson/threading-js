@@ -83,8 +83,14 @@ thread
 
 ## Thread
 
-#### constructor(func, context, srcs)
+#### constructor(threadFunc, context, srcs)
 The constructor takes a function to run, a dictionary of context data and functions for use in the thread function, and an array of remote source URLs to load libraries in from.
+
+`threadFunc` is the function to run in the worker. The value returned by this function will be passed back as the result of the run. `postMessage` can be used in this, as well, to post intermediate results back to the main thread.
+
+`context` is a shallow dictionary of data or functions to be injected into the web worker scope.
+
+`srcs` is an array of script URLs to load from.
 
 #### running
 Whether or not the thread is running
@@ -92,10 +98,12 @@ Whether or not the thread is running
 #### ready
 Whether or not the thread is ready
 
-#### run(args, intermediateFunc)
+#### run(args, intermediateFunc, transferList)
 Runs the thread function with the args value as an argument to the function.
 
-`intermediateFunc` is a callback to recieve intermediate postMessage results from the function.
+`intermediateFunc` is a callback to recieve intermediate postMessage results from the function. Use the intermediate postMessage function to transfer items as there's no way to return a list of items to transfer from thread function.
+
+`transferList` the equivelant of the `postMessage` transfer list argument. Note that items in the transfer list are automatically retured once the run is completed.
 
 Returns a promise.
 
@@ -106,7 +114,7 @@ Cancels the current run and prepares for a new one.
 Disposes of the Thread data so it can't be used anymore.
 
 ## ThreadPool
-A thrad pool for easily running many of the same type of task in parallel.
+A thread pool for easily running many of the same type of task in parallel.
 
 #### constructor(capacity, func, context, srcs)
 Like the thread constructor, but takes a capacity as the first argument.
