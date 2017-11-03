@@ -1,7 +1,7 @@
 {
   "name": "threading-js",
   "version": "0.0.3",
-  "description": "",
+  "description": "Small wrapper for web workers that allows for running tasks without having to serve a worker script to the client.",
   "main": "Thread.js",
   "dependencies": {},
   "devDependencies": {

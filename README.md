@@ -1,6 +1,6 @@
 # threading-js
 
-Small wrapper for web workers that allows for running functions created in the browser without having to serve a worker script the client.
+Small wrapper for web workers that allows for running tasks without having to serve a worker script to the client.
 
 ## Installation
 The repo is provided on npm [here](https://www.npmjs.com/package/threading-js).
