@@ -95,7 +95,7 @@ class Thread {
         ${scripts.join('\n')}
 
         // process function
-        const threadFunction = ${func}
+        const __threadFunction = ${func}
 
         // callbacks
         const __postMessage = postMessage
@@ -107,7 +107,7 @@ class Thread {
         }
 
         onmessage = e => {
-            const res = threadFunction(e.data.args)
+            const res = __threadFunction(e.data.args)
             const doComplete = data => {
                 __postMessage({
                     type: 'complete',
