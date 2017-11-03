@@ -106,11 +106,19 @@ class Thread {
             })
         }
 
-        onmessage = e => __postMessage({
-                type: 'complete',
-                data: threadFunction(e.data.args)
-            },
-            e.data.transferList)
+        onmessage = e => {
+            const res = threadFunction(e.data.args)
+            const doComplete = data => {
+                __postMessage({
+                    type: 'complete',
+                    data: data
+                },
+                e.data.transferList)
+            }
+
+            if (res instanceof Promise) res.then(data => doComplete(data))
+            else doComplete(res)
+        }
         `
 
         this._constructWorker()
