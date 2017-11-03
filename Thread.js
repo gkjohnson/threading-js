@@ -94,28 +94,35 @@ class Thread {
         // scripts
         ${scripts.join('\n')}
 
-        // callbacks
-        const __postMessage = postMessage
-        postMessage = msg => {
-            __postMessage({
-                type: 'intermediate',
-                data: msg
-            })
-        }
-
-        onmessage = e => {
-            const res = (${func})(e.data.args)
-            const doComplete = data => {
+        // self calling function so the thread function
+        // doesn't have access to our scope
+        (function(threadFunc) {
+            
+            // override the "postMessage" function
+            const __postMessage = postMessage
+            postMessage = msg => {
                 __postMessage({
-                    type: 'complete',
-                    data: data
-                },
-                e.data.transferList)
+                    type: 'intermediate',
+                    data: msg
+                })
             }
 
-            if (res instanceof Promise) res.then(data => doComplete(data))
-            else doComplete(res)
-        }
+            // set the on message function to start a
+            // thread run
+            onmessage = e => {
+                const res = threadFunc(e.data.args)
+                const doComplete = data => {
+                    __postMessage({
+                        type: 'complete',
+                        data: data
+                    },
+                    e.data.transferList)
+                }
+
+                if (res instanceof Promise) res.then(data => doComplete(data))
+                else doComplete(res)
+            }
+        })(${func})
         `
 
         this._constructWorker()
