@@ -4,10 +4,6 @@
 
 Small wrapper for web workers that allows for running tasks without having to serve a worker script to the client.
 
-```
-npm install threading-js
-```
-
 ## Use
 Simple example showing how to use a Thread to interleave two arrays together using a SharedArrayBuffer. Using basic arrays increases the run time due to copying the data. ArrayBuffer ownership can be transferred using the `transferList` parameter in `run` and `postMessage`.
 
