@@ -1,9 +1,8 @@
 # threading-js
 
-Small wrapper for web workers that allows for running tasks without having to serve a worker script to the client.
+[![npm version](https://badge.fury.io/js/threading-js.svg)](https://www.npmjs.com/package/threading-js)
 
-## Installation
-The repo is provided on npm [here](https://www.npmjs.com/package/threading-js).
+Small wrapper for web workers that allows for running tasks without having to serve a worker script to the client.
 
 ```
 npm install threading-js
