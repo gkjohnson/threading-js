@@ -10,7 +10,7 @@ npm install threading-js
 ```
 
 ## Use
-Simple example showing how to use a Thread to interleave two arrays together using a SharedArrayBuffer. Using basic arrays increases the run time due to copying the data.
+Simple example showing how to use a Thread to interleave two arrays together using a SharedArrayBuffer. Using basic arrays increases the run time due to copying the data. ArrayBuffer ownership can be transferred using the `transferList` parameter in `run` and `postMessage`.
 
 The function being passed to the thread must be completely self-contained and only reference data in the passed 'context' object or loaded scripts. All data passed into the context object will be stringified to be copied.
 
