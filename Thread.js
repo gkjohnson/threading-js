@@ -170,7 +170,7 @@ Thread._getScriptPromise = src => {
     if (src in Thread._scriptPromises) return Thread._scriptPromises[src]
 
     return Thread._scriptPromises[src] = new Promise((res, rej) => {
-        fetch(src)
+        fetch(src, { credentials: 'same-origin' })
             .then(data => data.text())
             .then(text => {
                 Thread._cachedScripts[src] = text
