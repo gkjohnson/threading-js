@@ -21,7 +21,7 @@ class ThreadPool {
         // Increment the number of running threads up to
         // capacity.
         this._activeThreads = Math.min(this._activeThreads + 1, this._capacity)
-        if (this._activeThreads > this._threads.length) this._threads.push(new Thread(...this._threadArgs))
+        if (this._activeThreads > this._threads.length) this._createThread()
 
         // Find a thread to run. If we can't find a thread that is
         // ready and able to run, we return null
@@ -47,5 +47,10 @@ class ThreadPool {
         this._activeThreads = 0
         this._threads.forEach(t => t.dispose())
         this._threads = []
+    }
+
+    /* Private Functions */
+    _createThread() {
+        this._threads.push(new Thread(...this._threadArgs))
     }
 }
