@@ -78,7 +78,7 @@ thread
 
 ## Thread
 
-#### constructor(threadFunc, context, srcs)
+### constructor(threadFunc, context, srcs)
 The constructor takes a function to run, a dictionary of context data and functions for use in the thread function, and an array of remote source URLs to load libraries in from.
 
 `threadFunc` is the function to run in the worker. The value returned by this function will be passed back as the result of the run. `postMessage` can be used in this, as well, to post intermediate results back to the main thread.
@@ -87,13 +87,13 @@ The constructor takes a function to run, a dictionary of context data and functi
 
 `srcs` is an array of script URLs to load from.
 
-#### running
+### running
 Whether or not the thread is running
 
-#### ready
+### ready
 Whether or not the thread is ready
 
-#### run(args, intermediateFunc, transferList)
+### run(args, intermediateFunc, transferList)
 Runs the thread function with the args value as an argument to the function.
 
 `intermediateFunc` is a callback to recieve intermediate postMessage results from the function. Use the intermediate postMessage function to transfer items as there's no way to return a list of items to transfer from thread function.
@@ -102,41 +102,43 @@ Runs the thread function with the args value as an argument to the function.
 
 Returns a promise.
 
-#### cancel()
+### cancel()
 Cancels the current run and prepares for a new one.
 
-#### dipose()
+### dipose()
 Disposes of the Thread data so it can't be used anymore.
 
 ## ThreadPool
 A thread pool for easily running many of the same type of task in parallel.
 
-#### constructor(capacity, func, context, srcs)
+### constructor(capacity, func, context, srcs, options)
 Like the thread constructor, but takes a capacity as the first argument.
 
-#### ready
+**options.initializeImmediately = true**: Creates all the threads immediately instead of lazily creating them so no intialization overhead is incurred.
+
+### ready
 Whether the pool has inactive threads.
 
-#### activeThreads
+### activeThreads
 The number of currently inactive threads.
 
-#### capacity
+### capacity
 The total possible number of threads the pool can support.
 
-#### run(...)
+### run(...)
 Get and use an available thread to run the requested task. Behaves like `Thread.run`, but returns `null` if there are not threads available in the pool.
 
-#### dispose()
+### dispose()
 Dispose of all threads and data.
 
 ## ThreadQueue
 A helper class for creating a job queue and running through the tasks using as many threads to work as the capacity allows.
 
-#### constructor(...)
+### constructor(...)
 Same as the `ThreadPool` constructor.
 
-#### run(...)
+### run(...)
 Same as `Thread.run`.
 
-#### dispose()
+### dispose()
 Same as `ThreadPool.dispose`
