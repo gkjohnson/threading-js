@@ -5,7 +5,10 @@
   "main": "Thread.js",
   "dependencies": {},
   "devDependencies": {
-    "static-server": "^2.0.6"
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "static-server": "^2.0.6",
+    "webpack": "^3.8.1"
   },
   "scripts": {
     "serve": "static-server"
