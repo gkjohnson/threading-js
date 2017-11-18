@@ -1,3 +1,5 @@
+import Thread from 'Thread.js'
+
 // Thread Pool for creating multiple threads with the same
 // function and running them in parallel
 class ThreadPool {
@@ -61,3 +63,5 @@ class ThreadPool {
         if (count > this._threads.length) this._createThread()
     }
 }
+
+export default ThreadPool

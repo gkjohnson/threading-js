@@ -182,3 +182,5 @@ Thread._getScriptPromise = src => {
             })
     })
 }
+
+export default Thread
