@@ -1,4 +1,4 @@
-import Thread from 'Thread.js'
+import Thread from './Thread.js'
 
 // Thread Pool for creating multiple threads with the same
 // function and running them in parallel

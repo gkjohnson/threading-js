@@ -1,4 +1,4 @@
-import ThreadPool from 'ThreadPool.js'
+import ThreadPool from './ThreadPool.js'
 
 // Class to enqueue jobs and run across multiple threads
 class ThreadQueue extends ThreadPool {
