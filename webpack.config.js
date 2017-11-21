@@ -11,6 +11,22 @@
 const libraryName = process.env.PACKAGE
 const fileName = `${process.env.PACKAGE}.js`
 
+// generate the list of external files and how to import them
+// for each import convention
+const packages = ['Thread', 'ThreadPool', 'ThreadQueue']
+const externals = {}
+packages.forEach(pkgName => {
+    if (pkgName !== libraryName) {
+        const file = `./${pkgName}.js`
+        externals[file] = {
+            commonjs2:  file,
+            commonjs:   file,
+            amd:        file,
+            root:       pkgName
+        }
+    }
+})
+
 module.exports = {
     entry: `./${fileName}`,
 
@@ -22,21 +38,5 @@ module.exports = {
         libraryTarget:  'umd'
     },
 
-    // Babel-loader is used to convert es6 imports into the module.exports
-    // syntax and the "add-module-exports" babel plugin is used to ensure that
-    // the expected class is exported as the package instead of it being placed
-    // into the "default" field.
-    module: {
-        rules: [{
-            test: /\.js$/,
-            use: ['babel-loader']
-        }]
-    },
-
-    // Skip any file that is not the one we're packaging so webpack
-    // does _not_ bundle all the dependencies into a single file
-    externals: [function(context, request, callback) {
-        if(request.indexOf(fileName) !== -1) callback()
-        else callback(null, 'commonjs ' + request)
-    }]
+    externals
 }
