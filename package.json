@@ -1,6 +1,6 @@
 {
   "name": "threading-js",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "description": "Small wrapper for web workers that allows for running tasks without having to serve a worker script to the client.",
   "dependencies": {},
   "devDependencies": {
@@ -9,9 +9,9 @@
     "webpack": "^3.8.1"
   },
   "scripts": {
-    "build-thread":       "cross-env PACKAGE=Thread webpack",
-    "build-threadpool":   "cross-env PACKAGE=ThreadPool webpack",
-    "build-threadqueue":  "cross-env PACKAGE=ThreadQueue webpack",
+    "build-thread": "cross-env PACKAGE=Thread webpack",
+    "build-threadpool": "cross-env PACKAGE=ThreadPool webpack",
+    "build-threadqueue": "cross-env PACKAGE=ThreadQueue webpack",
     "build": "npm run build-thread & npm run build-threadpool & npm run build-threadqueue",
     "serve": "static-server"
   },
