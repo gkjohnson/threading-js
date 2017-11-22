@@ -29,7 +29,7 @@
     "subprocess"
   ],
   "author": "Garrett Johnson <garrett.kjohnson@gmail.com>",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/gkjohnson/javascript-thread-runner/issues"
   },
