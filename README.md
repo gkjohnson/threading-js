@@ -9,7 +9,13 @@ Simple example showing how to use a Thread to interleave two arrays together usi
 
 The function being passed to the thread must be completely self-contained and only reference data in the passed 'context' object or loaded scripts. All data passed into the context object will be stringified to be copied.
 
+#### With ES6 Imports
+
+Example [here](./example/index.html)
+
 ```js
+import Thread from '.../node_modules/threading-js/Thread.js'
+
 // Operation functions
 const interleave = (a, b, res) => {
   let i = 0
@@ -74,6 +80,24 @@ thread
 // done
 // subsequent thread run: 35.179931640625ms
 ```
+
+#### With UMD
+
+Example [here](./example/index.umd.html)
+
+```html
+<script type="text/javascript" src="../umd/Thread.js"></script>
+<script type="text/javascript" src="../umd/ThreadPool.js"></script>
+<script type="text/javascript" src="../umd/ThreadQueue.js"></script>
+
+<script>
+  const Thread = window.Thread.default
+  const thread = new Thread(...)
+  
+  // ...use the thread...
+</script>
+```
+
 # API
 
 ## Thread
