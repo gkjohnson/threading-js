@@ -30,7 +30,7 @@
     "browser",
     "thread",
     "transfer",
-    "workers",
+    "workers"
   ],
   "author": "Garrett Johnson <garrett.kjohnson@gmail.com>",
   "license": "MIT",
