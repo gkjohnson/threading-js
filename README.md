@@ -98,6 +98,20 @@ Example [here](./example/index.umd.html)
 </script>
 ```
 
+#### Getting the Best Performance
+
+##### Data Clone Pitfalls
+
+When basic Javascript objects are transferred between the UI thread and a Web Worker (via `run()` in this library), they are copied using the [Structured Clone Algorithm](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm), which introduces a significant overhead that can be so bad that it completely defeats the purpose of using a thread. Using shared or transferred buffers is preferable.
+
+##### Transferable Objects and ArrayBuffers
+
+Some objects can have their [ownership transferred between the threads](https://developer.mozilla.org/en-US/docs/Web/API/Transferable), removing the need for cloning the data and associated overhead. A buffer is transferred using the `run()` function in this library and passing the object into the `transferList` array. Once an object has been transferred it's no longer accessible from the original thread and must be explicitly transferred back using a call to `postMessage()`. If an item is not in the transferList, then it is copied.
+
+##### SharedArrayBuffers
+
+[SharedArrayBuffers](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer) are not copied, but don't need to be in the `transferList`, either. These buffers can be read from multiple threads at once making them an ideal vessel for data processing and return objects. Synchronized writes, however, must be accounted for.
+
 # API
 
 ## Thread
