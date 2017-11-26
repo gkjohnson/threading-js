@@ -26,7 +26,11 @@
     "webworker",
     "webworkers",
     "process",
-    "subprocess"
+    "subprocess",
+    "browser",
+    "thread",
+    "transfer",
+    "workers",
   ],
   "author": "Garrett Johnson <garrett.kjohnson@gmail.com>",
   "license": "MIT",
