@@ -86,7 +86,7 @@ class Thread {
                     const data = context[key]
                     const str = data instanceof Function ? data.toString() : JSON.stringify(data)
 
-                    return `const ${key} = ${str}`
+                    return `const ${key} = ${str};`
                 })
                 .join('\n')
         }
@@ -96,7 +96,7 @@ class Thread {
 
         // self calling function so the thread function
         // doesn't have access to our scope
-        (function(threadFunc) {
+        ;(function(threadFunc) {
             
             // override the "postMessage" function
             const __postMessage = postMessage
@@ -104,24 +104,24 @@ class Thread {
                 __postMessage({
                     type: 'intermediate',
                     data: msg
-                })
-            }
+                });
+            };
 
             // set the on message function to start a
             // thread run
             onmessage = e => {
-                const res = threadFunc(e.data.args)
+                const res = threadFunc(e.data.args);
                 const doComplete = data => {
                     __postMessage({
                         type: 'complete',
                         data: data
                     },
                     e.data.transferList)
-                }
+                };
 
-                if (res instanceof Promise) res.then(data => doComplete(data))
-                else doComplete(res)
-            }
+                if (res instanceof Promise) res.then(data => doComplete(data));
+                else doComplete(res);
+            };
         })(${func})
         `
 
