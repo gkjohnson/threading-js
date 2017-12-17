@@ -2,6 +2,10 @@
 // serving a script from a server
 class Thread {
     static funcToString(f) {
+        // class functions can't be evaluated once stringified because
+        // the `function` keyword is needed in front of it, so correct
+        // that here. Example:
+        // "funcName() {}" => "function() {}"
         return f.toString().replace(/^[^(\s]+\(/, 'function(')
     }
 
