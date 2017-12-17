@@ -1,6 +1,10 @@
 // Thread class for running a function in a webworker without
 // serving a script from a server
 class Thread {
+    static funcToString(f) {
+        return f.toString().replace(/^[^(\s]+\(/, 'function(')
+    }
+
     get running() { return !!this._process }
 
     get ready() { return this._ready }
@@ -84,7 +88,10 @@ class Thread {
                 .map(key => {
                     // manually stringify functions
                     const data = context[key]
-                    const str = data instanceof Function ? data.toString() : JSON.stringify(data)
+                    const isFunc = data instanceof Function
+                    let str = null
+                    if (isFunc) str = Thread.funcToString(data)
+                    else str = JSON.stringify(data)
 
                     return `const ${key} = ${str};`
                 })
@@ -122,7 +129,7 @@ class Thread {
                 if (res instanceof Promise) res.then(data => doComplete(data));
                 else doComplete(res);
             };
-        })(${func})
+        })(${Thread.funcToString(func)})
         `
 
         this._constructWorker()
