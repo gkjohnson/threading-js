@@ -82,6 +82,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 // Thread class for running a function in a webworker without
 // serving a script from a server
 class Thread {
+    static funcToString(f) {
+        // class functions can't be evaluated once stringified because
+        // the `function` keyword is needed in front of it, so correct
+        // that here. Example:
+        // "funcName() {}" => "function() {}"
+        return f.toString().replace(/^[^(\s]+\(/, 'function(')
+    }
+
     get running() { return !!this._process }
 
     get ready() { return this._ready }
@@ -165,9 +173,12 @@ class Thread {
                 .map(key => {
                     // manually stringify functions
                     const data = context[key]
-                    const str = data instanceof Function ? data.toString() : JSON.stringify(data)
+                    const isFunc = data instanceof Function
+                    let str = null
+                    if (isFunc) str = Thread.funcToString(data)
+                    else str = JSON.stringify(data)
 
-                    return `const ${key} = ${str}`
+                    return `const ${key} = ${str};`
                 })
                 .join('\n')
         }
@@ -177,7 +188,7 @@ class Thread {
 
         // self calling function so the thread function
         // doesn't have access to our scope
-        (function(threadFunc) {
+        ;(function(threadFunc) {
             
             // override the "postMessage" function
             const __postMessage = postMessage
@@ -185,25 +196,25 @@ class Thread {
                 __postMessage({
                     type: 'intermediate',
                     data: msg
-                })
-            }
+                });
+            };
 
             // set the on message function to start a
             // thread run
             onmessage = e => {
-                const res = threadFunc(e.data.args)
+                const res = threadFunc(e.data.args);
                 const doComplete = data => {
                     __postMessage({
                         type: 'complete',
                         data: data
                     },
                     e.data.transferList)
-                }
+                };
 
-                if (res instanceof Promise) res.then(data => doComplete(data))
-                else doComplete(res)
-            }
-        })(${func})
+                if (res instanceof Promise) res.then(data => doComplete(data));
+                else doComplete(res);
+            };
+        })(${Thread.funcToString(func)})
         `
 
         this._constructWorker()
