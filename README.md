@@ -37,7 +37,7 @@ const threadFunc = args => {
   postMessage('starting')
   const data = interleave(arr1, arr2, res)
   postMessage('done')
-  
+
   return data
 }
 
@@ -93,7 +93,7 @@ Example [here](./example/index.umd.html)
 <script>
   const Thread = window.Thread.default
   const thread = new Thread(...)
-  
+
   // ...use the thread...
 </script>
 ```

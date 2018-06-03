@@ -3,63 +3,75 @@
 <head>
     <title></title>
     <script type="module">
-        import Thread from '../Thread.js'
+        import Thread from '../Thread.js';
 
         // Operation functions
         const interleave = (a, b, res) => {
-          let i = 0
-          while(true) {
-            if (i >= a.length || i >= b.length) break
 
-            res[2 * i + 0] = a[i]
-            res[2 * i + 1] = b[i]
-            i++
-          }
-          return res
-        }
+            let i = 0;
+            while (true) {
+
+                if (i >= a.length || i >= b.length) break;
+
+                res[2 * i + 0] = a[i];
+                res[2 * i + 1] = b[i];
+                i++;
+
+            }
+            return res;
+
+        };
 
         const threadFunc = args => {
-          const arr1 = args.arr1
-          const arr2 = args.arr2
-          const res = args.res
 
-          postMessage('starting')
-          const data = interleave(arr1, arr2, res)
-          postMessage('done')
-          
-          return data
-        }
+            const arr1 = args.arr1;
+            const arr2 = args.arr2;
+            const res = args.res;
+
+            postMessage('starting');
+            const data = interleave(arr1, arr2, res);
+            postMessage('done');
+
+            return data;
+
+        };
 
         // Create thread
-        const thread = new Thread(threadFunc, { interleave })
+        const thread = new Thread(threadFunc, { interleave });
 
         // Create data
-        const ARRAY_LENGTH = 100000000
-        const arr1 = new Float32Array(new SharedArrayBuffer(ARRAY_LENGTH * 4))
-        const arr2 = new Float32Array(new SharedArrayBuffer(ARRAY_LENGTH * 4))
-        const sharedres = new Float32Array(new SharedArrayBuffer(ARRAY_LENGTH * 4 * 2))
-        for(let i = 0; i < ARRAY_LENGTH; i++) {
-          arr1[i] = Math.random()
-          arr2[i] = Math.random()
+        const ARRAY_LENGTH = 100000000;
+        const arr1 = new Float32Array(new SharedArrayBuffer(ARRAY_LENGTH * 4));
+        const arr2 = new Float32Array(new SharedArrayBuffer(ARRAY_LENGTH * 4));
+        const sharedres = new Float32Array(new SharedArrayBuffer(ARRAY_LENGTH * 4 * 2));
+        for (let i = 0; i < ARRAY_LENGTH; i++) {
+
+            arr1[i] = Math.random();
+            arr2[i] = Math.random();
+
         }
 
         // Run the tests
-        console.time('main thread run')
-        interleave(arr1, arr2, sharedres)
-        console.timeEnd('main thread run')
+        console.time('main thread run');
+        interleave(arr1, arr2, sharedres);
+        console.timeEnd('main thread run');
 
-        console.time('initial thread run')
+        console.time('initial thread run');
         thread
             .run({ arr1, arr2, res: sharedres }, log => console.log(log))
             .then(res => {
-                console.timeEnd('initial thread run')
 
-                console.time('subsequent thread run')
-                return thread.run({ arr1, arr2, res: sharedres }, log => console.log(log))
-            })
+                console.timeEnd('initial thread run');
+
+                console.time('subsequent thread run');
+                return thread.run({ arr1, arr2, res: sharedres }, log => console.log(log));
+
+    })
             .then(res => {
-                console.timeEnd('subsequent thread run')
-            })
+
+                console.timeEnd('subsequent thread run');
+
+    });
     </script>
 </head>
 <body>
