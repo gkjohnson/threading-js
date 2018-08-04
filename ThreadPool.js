@@ -5,24 +5,24 @@ import Thread from './Thread.js';
 class ThreadPool {
 
     // whether the pool has available threads
-    get ready () {
+    get ready() {
 
         return this._activeThreads < this._capacity;
 
     }
 
-    get activeThreads () {
+    get activeThreads() {
 
         return this._activeThreads;
 
     }
-    get capacity () {
+    get capacity() {
 
         return this._capacity;
 
     }
 
-    constructor (capacity, func, context = {}, srcs = [], options = {}) {
+    constructor(capacity, func, context = {}, srcs = [], options = {}) {
 
         this._capacity = capacity;
         this._activeThreads = 0;
@@ -35,7 +35,7 @@ class ThreadPool {
     }
 
     /* Public API */
-    run () {
+    run() {
 
         // Increment the number of running threads up to
         // capacity.
@@ -68,7 +68,7 @@ class ThreadPool {
 
     }
 
-    dispose () {
+    dispose() {
 
         this._capacity = 0;
         this._activeThreads = 0;
@@ -78,13 +78,13 @@ class ThreadPool {
     }
 
     /* Private Functions */
-    _createThread () {
+    _createThread() {
 
         this._threads.push(new Thread(...this._threadArgs));
 
     }
 
-    _createThreadsUpTo (count) {
+    _createThreadsUpTo(count) {
 
         count = Math.min(count, this.capacity);
         if (count > this._threads.length) this._createThread();

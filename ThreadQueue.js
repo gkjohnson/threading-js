@@ -3,14 +3,14 @@ import ThreadPool from './ThreadPool.js';
 // Class to enqueue jobs and run across multiple threads
 class ThreadQueue extends ThreadPool {
 
-    get ready () {
+    get ready() {
 
         return true;
 
     }
 
     /* Public API */
-    run () {
+    run() {
 
         this._queue = this._queue || [];
 
@@ -24,7 +24,7 @@ class ThreadQueue extends ThreadPool {
 
     }
 
-    dispose () {
+    dispose() {
 
         super.dispose();
         this._queue = [];
@@ -33,7 +33,7 @@ class ThreadQueue extends ThreadPool {
 
     /* Private Functions */
     // Try to run the jobs on the queue
-    _tryRunQueue () {
+    _tryRunQueue() {
 
         // run jobs on the queue on the threadpool is
         // saturated
