@@ -8,6 +8,12 @@
     "static-server": "^2.0.6",
     "webpack": "^3.8.1"
   },
+  "files": [
+    "Thread.js",
+    "ThreadPool.js",
+    "ThreadQueue.js",
+    "umd/"
+  ],
   "scripts": {
     "build": "webpack",
     "serve": "static-server"
