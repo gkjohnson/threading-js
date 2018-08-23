@@ -11,7 +11,7 @@ beforeAll(async() => {
     // TODO: Figure out how to get coverage of the modules in the tests.
     // May have to run static server to load the modules.
     browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
 
         // --no-sandbox is required to run puppeteer in Travis.
         // https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-on-travis-ci
