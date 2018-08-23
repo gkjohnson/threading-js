@@ -1,8 +1,8 @@
 /* global
-    describe it beforeAll afterAll beforeEach afterEach expect
+    describe it beforeAll afterAll expect
 */
 const puppeteer = require('puppeteer');
-const pti = require('puppeteer-to-istanbul');
+// const pti = require('puppeteer-to-istanbul');
 const path = require('path');
 
 let browser = null, page = null;

@@ -1,6 +1,8 @@
 # threading-js
 
-[![npm version](https://badge.fury.io/js/threading-js.svg)](https://www.npmjs.com/package/threading-js)
+[![npm version](https://img.shields.io/npm/v/threading-js.svg?style=flat-square)](https://www.npmjs.com/package/threading-js)
+[![travis build](https://img.shields.io/travis/gkjohnson/threading-js.svg?style=flat-square)](https://travis-ci.org/gkjohnson/threading-js)
+[![lgtm code quality](https://img.shields.io/lgtm/grade/javascript/g/gkjohnson/threading-js.svg?style=flat-square&label=code-quality)](https://lgtm.com/projects/g/gkjohnson/threading-js/)
 
 Small wrapper for browser [Web Workers](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Using_web_workers) that simplfies running tasks and allows running without having to serve a worker script to the client.
 
