@@ -86,14 +86,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 // Class to enqueue jobs and run across multiple threads
 class ThreadQueue extends __WEBPACK_IMPORTED_MODULE_0__ThreadPool_js___default.a {
 
-    get ready () {
+    get ready() {
 
         return true;
 
     }
 
     /* Public API */
-    run () {
+    run() {
 
         this._queue = this._queue || [];
 
@@ -107,7 +107,7 @@ class ThreadQueue extends __WEBPACK_IMPORTED_MODULE_0__ThreadPool_js___default.a
 
     }
 
-    dispose () {
+    dispose() {
 
         super.dispose();
         this._queue = [];
@@ -116,7 +116,7 @@ class ThreadQueue extends __WEBPACK_IMPORTED_MODULE_0__ThreadPool_js___default.a
 
     /* Private Functions */
     // Try to run the jobs on the queue
-    _tryRunQueue () {
+    _tryRunQueue() {
 
         // run jobs on the queue on the threadpool is
         // saturated

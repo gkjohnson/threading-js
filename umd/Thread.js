@@ -83,7 +83,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 // serving a script from a server
 class Thread {
 
-    static funcToString (f) {
+    static funcToString(f) {
 
         // class functions can't be evaluated once stringified because
         // the `function` keyword is needed in front of it, so correct
@@ -93,19 +93,19 @@ class Thread {
 
     }
 
-    get running () {
+    get running() {
 
         return !!this._process;
 
     }
 
-    get ready () {
+    get ready() {
 
-        return this._ready;
+        return !!this._ready;
 
     }
 
-    constructor (func, context = {}, srcs = []) {
+    constructor(func, context = {}, srcs = []) {
 
         if (!(func instanceof Function)) throw new Error(func, ' is not a function');
 
@@ -130,6 +130,8 @@ class Thread {
 
         });
 
+        this._disposed = false;
+
         Promise
             .all(promises)
             .then(() => this._initWorker(func, context, scripts));
@@ -142,8 +144,9 @@ class Thread {
     // when results re posted back to the main thread while
     // the function is running
     // Returns a promise
-    run (args, intermediateFunc, transferList) {
+    run(args, intermediateFunc, transferList) {
 
+        this.cancel();
         if (!this.ready) {
 
             // queue up the first run if we're not quite ready yet
@@ -156,7 +159,6 @@ class Thread {
 
         } else {
 
-            this.cancel();
             this._worker.postMessage({ args, transferList }, transferList);
 
         }
@@ -170,19 +172,23 @@ class Thread {
     }
 
     // Cancels the currently running process
-    cancel () {
+    cancel() {
 
-        if (this.ready && this.running && this._process) {
+        if (this._process) {
 
             this._process.reject({
                 type: 'cancel',
-                msg: null
+                msg: null,
             });
 
             this._process = null;
 
-            this._worker.terminate();
-            this._constructWorker();
+            if (this.ready && this.running) {
+
+                this._worker.terminate();
+                this._constructWorker();
+
+            }
 
         }
         delete this._lateRun;
@@ -191,17 +197,21 @@ class Thread {
 
     // disposes the current thread so it can
     // no longer be used
-    dispose () {
+    dispose() {
 
-        this._worker.terminate();
+        this.cancel();
+        if (this._worker) this._worker.terminate();
         this._ready = false;
+        this._disposed = true;
 
     }
 
     /* Private Functions */
     // initialize the worker and cache the script
     // to use in the worker
-    _initWorker (func, context, scripts) {
+    _initWorker(func, context, scripts) {
+
+        if (this._disposed) return;
 
         this._cachedScript = `
         // context definition
@@ -217,19 +227,19 @@ class Thread {
             if (isFunc) str = Thread.funcToString(data);
             else str = JSON.stringify(data);
 
-            return `const ${key} = ${str};`;
+            return `const ${ key } = ${ str };`;
 
         })
         .join('\n')
 }
 
         // scripts
-        ${scripts.join('\n')}
+        ${ scripts.join('\n') }
 
         // self calling function so the thread function
         // doesn't have access to our scope
         ;(function(threadFunc) {
-            
+
             // override the "postMessage" function
             const __postMessage = postMessage
             postMessage = msg => {
@@ -254,7 +264,7 @@ class Thread {
                 if (res instanceof Promise) res.then(data => doComplete(data));
                 else doComplete(res);
             };
-        })(${Thread.funcToString(func)})
+        })(${ Thread.funcToString(func) })
         `;
 
         this._constructWorker();
@@ -262,7 +272,7 @@ class Thread {
     }
 
     // consruct the worker
-    _constructWorker () {
+    _constructWorker() {
 
         // create the blob
         const blob = new Blob([this._cachedScript], { type: 'plain/text' });
@@ -326,7 +336,7 @@ Thread._getScriptPromise = src => {
             })
             .catch(e => {
 
-                console.error(`Could not load script from '${src}'`);
+                console.error(`Could not load script from '${ src }'`);
                 console.error(e);
 
             });

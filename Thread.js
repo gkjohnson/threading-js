@@ -20,7 +20,7 @@ class Thread {
 
     get ready() {
 
-        return this._ready;
+        return !!this._ready;
 
     }
 
@@ -49,6 +49,8 @@ class Thread {
 
         });
 
+        this._disposed = false;
+
         Promise
             .all(promises)
             .then(() => this._initWorker(func, context, scripts));
@@ -63,6 +65,7 @@ class Thread {
     // Returns a promise
     run(args, intermediateFunc, transferList) {
 
+        this.cancel();
         if (!this.ready) {
 
             // queue up the first run if we're not quite ready yet
@@ -75,7 +78,6 @@ class Thread {
 
         } else {
 
-            this.cancel();
             this._worker.postMessage({ args, transferList }, transferList);
 
         }
@@ -91,7 +93,7 @@ class Thread {
     // Cancels the currently running process
     cancel() {
 
-        if (this.ready && this.running && this._process) {
+        if (this._process) {
 
             this._process.reject({
                 type: 'cancel',
@@ -100,8 +102,12 @@ class Thread {
 
             this._process = null;
 
-            this._worker.terminate();
-            this._constructWorker();
+            if (this.ready && this.running) {
+
+                this._worker.terminate();
+                this._constructWorker();
+
+            }
 
         }
         delete this._lateRun;
@@ -112,8 +118,10 @@ class Thread {
     // no longer be used
     dispose() {
 
-        this._worker.terminate();
+        this.cancel();
+        if (this._worker) this._worker.terminate();
         this._ready = false;
+        this._disposed = true;
 
     }
 
@@ -121,6 +129,8 @@ class Thread {
     // initialize the worker and cache the script
     // to use in the worker
     _initWorker(func, context, scripts) {
+
+        if (this._disposed) return;
 
         this._cachedScript = `
         // context definition

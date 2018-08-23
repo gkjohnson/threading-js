@@ -16,6 +16,7 @@ class ThreadPool {
         return this._activeThreads;
 
     }
+
     get capacity() {
 
         return this._capacity;
