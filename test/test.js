@@ -53,19 +53,55 @@ describe('Thread', () => {
         const res =
             await page.evaluate(async() => {
 
+                class TestClass {
+
+                    static staticFunc(a, b) { return a + b; }
+
+                    constructor(a, b) {
+                        this.a = a;
+                        this.b = b;
+                    }
+
+                    instFunc(a, b) { return a + b; }
+
+                }
+
                 /* eslint-disable */
                 const thread =
                     new window.Thread(() => ({
                         stringVal,
                         numberVal,
                         arrayVal,
+                        objectVal,
+
                         funcVal: funcVal.toString(),
-                        funcRes: funcVal(1, 2)
+                        funcRes: funcVal(1, 2),
+                        arrowVal: arrowVal.toString(),
+                        arrowRes: arrowVal(1, 2),
+                        inlineFuncVal: inlineFuncVal.toString(),
+                        inlineFuncRes: inlineFuncVal(1, 2),
+
+                        staticFuncVal: staticFuncVal.toString(),
+                        staticFuncRes: staticFuncVal(1, 2),
+                        instFuncVal: instFuncVal.toString(),
+                        instFuncRes: instFuncVal(1, 2),
+
+                        classVal: Klass.toString(),
+                        classInst: new Klass(10, 20)
                     }), {
                         stringVal: 'test',
                         numberVal: 100,
                         arrayVal: [1, 2, 3],
-                        funcVal: (a, b) => a + b,
+                        objectVal: { a: 1, b: 2 },
+
+                        funcVal: function(a, b) { return a + b; },
+                        arrowVal: (a, b) => a + b,
+                        inlineFuncVal(a, b) { return a + b; },
+
+                        staticFuncVal: TestClass.staticFunc,
+                        instFuncVal: (new TestClass().instFunc),
+
+                        Klass: TestClass
                     });
                 /* eslint-enable */
 
@@ -80,8 +116,21 @@ describe('Thread', () => {
         expect(res.stringVal).toEqual('test');
         expect(res.numberVal).toEqual(100);
         expect(res.arrayVal).toEqual([1, 2, 3]);
-        expect(res.funcVal).toEqual('(a, b) => a + b');
+        expect(res.objectVal).toEqual({ a: 1, b: 2 });
+        expect(res.funcVal.replace(/\s+/g, '')).toEqual('function(a,b){returna+b;}');
         expect(res.funcRes).toEqual(3);
+        expect(res.arrowVal).toEqual('(a, b) => a + b');
+        expect(res.arrowRes).toEqual(3);
+        expect(res.inlineFuncVal.replace(/\s+/g, '')).toEqual('function(a,b){returna+b;}');
+        expect(res.inlineFuncRes).toEqual(3);
+
+        expect(res.staticFuncVal.replace(/\s+/g, '')).toEqual('function(a,b){returna+b;}');
+        expect(res.staticFuncRes).toEqual(3);
+        expect(res.instFuncVal.replace(/\s+/g, '')).toEqual('function(a,b){returna+b;}');
+        expect(res.instFuncRes).toEqual(3);
+
+        expect(res.classVal.replace(/\s+/g, 'classTestClass{staticstaticFunc(a,b){returna+b;}constructor(a,b){this.a=a;this.b=b;}instFunc(a,b){returna+b;}}'));
+        expect(res.classInst).toEqual({ a: 10, b: 20 });
 
     });
 
