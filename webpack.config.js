@@ -8,7 +8,7 @@ module.exports =
             // This packages library name and
             // the file name
             const libraryName = pkgName;
-            const fileName = `${pkgName}.js`;
+            const fileName = `${ pkgName }.js`;
 
             // Push the other packages into the
             // externals object
@@ -17,28 +17,28 @@ module.exports =
                 .filter(p => pkgName !== p)
                 .forEach(pkgName => {
 
-                    const file = `./${pkgName}.js`;
+                    const file = `./${ pkgName }.js`;
                     externals[file] = {
                         commonjs2: file,
                         commonjs: file,
                         amd: file,
-                        root: pkgName
+                        root: pkgName,
                     };
 
                 });
 
             return {
-                entry: `./${fileName}`,
+                entry: `./${ fileName }`,
 
                 // Target the same file destination but in the UMD directory
                 // with a target format of UMD
                 output: {
-                    filename: `./umd/${fileName}`,
+                    filename: `./umd/${ fileName }`,
                     library: libraryName,
-                    libraryTarget: 'umd'
+                    libraryTarget: 'umd',
                 },
 
-                externals
+                externals,
             };
 
         });
