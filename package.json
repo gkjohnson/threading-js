@@ -23,7 +23,8 @@
   "scripts": {
     "build": "webpack",
     "serve": "static-server",
-    "lint": "eslint *.js"
+    "lint": "eslint *.js",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
