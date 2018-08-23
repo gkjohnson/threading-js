@@ -22,7 +22,7 @@
   ],
   "scripts": {
     "build": "webpack",
-    "serve": "static-server",
+    "start": "static-server",
     "lint": "eslint *.js",
     "test": "jest"
   },

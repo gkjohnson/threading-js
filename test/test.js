@@ -95,7 +95,7 @@ describe('Thread', () => {
                 ab[1] = 2;
                 ab[2] = 3;
 
-                const thread = new window.Thread(ab => ([ab[0], ab[1], ab[2]]));
+                const thread = new window.Thread(ab => ({ data: [ab[0], ab[1], ab[2]], ab }));
                 await new Promise(resolve => {
 
                     function waiting() {
@@ -115,11 +115,11 @@ describe('Thread', () => {
 
                 const result = await pr;
 
-                const length3 = ab.length;
+                const length3 = result.ab.length;
 
                 thread.dispose();
 
-                return { length1, length2, length3, result };
+                return { length1, length2, length3, result: result.data };
 
             });
 
