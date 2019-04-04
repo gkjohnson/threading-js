@@ -12,7 +12,8 @@
     "puppeteer": "^1.7.0",
     "puppeteer-to-istanbul": "^1.2.2",
     "static-server": "^2.0.6",
-    "webpack": "^4.29.6"
+    "webpack": "^4.29.6",
+    "webpack-cli": "^3.3.0"
   },
   "files": [
     "Thread.js",
