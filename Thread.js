@@ -171,7 +171,7 @@ class Thread {
             // set the on message function to start a
             // thread run
             onmessage = e => {
-                console.log(e.data)
+
                 const res = threadFunc(e.data.args);
                 const doComplete = data => {
                     __postMessage({
