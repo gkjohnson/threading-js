@@ -1,3 +1,5 @@
+const path = require('path');
+
 // Build all three files independently
 const packages = ['Thread', 'ThreadPool', 'ThreadQueue'];
 
@@ -33,7 +35,8 @@ module.exports =
                 // Target the same file destination but in the UMD directory
                 // with a target format of UMD
                 output: {
-                    filename: `./umd/${ fileName }`,
+                    path: path.resolve(__dirname, 'umd'),
+                    filename: fileName,
                     library: libraryName,
                     libraryTarget: 'umd',
                 },
